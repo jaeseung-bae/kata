@@ -1,9 +1,11 @@
 package com.github.practice.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +32,7 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles/{id}")
-    public Article getArticle(@PathVariable Long id) {
+    public Article getArticle(@PathVariable("id") Long id) {
         Article article = repository.findById(id).orElse(null);
         return article;
     }
@@ -39,5 +41,29 @@ public class ArticleApiController {
     public Page<Article> listArticles(Pageable pageable) {
         Page<Article> all = repository.findAll(pageable);
         return all;
+    }
+
+    @PatchMapping("/api/articles/{id}")
+    public ResponseEntity<Article> patch(@PathVariable("id") Long id, @RequestBody ArticleFormDTO dto) {
+        log.info("id={}, request={}", id, dto.toString());
+        Article article = repository.findById(id).orElse(null);
+        if (article == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        article.patch(dto.toEntity());
+        log.info("updatedArticle={}", article);
+        repository.save(article);
+        return ResponseEntity.ok(article);
+    }
+
+    @DeleteMapping("/api/articles/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+        Article article = repository.findById(id).orElse(null);
+        if (article == null) {
+            return ResponseEntity.notFound().build();
+        }
+        repository.delete(article);
+        return ResponseEntity.noContent().build();
     }
 }
