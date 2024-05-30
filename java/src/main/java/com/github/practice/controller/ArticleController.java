@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.practice.domain.Article;
 import com.github.practice.dto.ArticleFormDTO;
@@ -46,7 +47,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{id}")
-    public String show(@PathVariable Long id, Model model) {
+    public String show(@PathVariable("id") Long id, Model model) {
         Article article = repository.findById(id).orElse(null);
         if (article == null) {
             return "articles/show";
@@ -63,7 +64,7 @@ public class ArticleController {
     }
 
     @GetMapping("/articles/{id}/edit")
-    public String edit(@PathVariable Long id, Model model) {
+    public String edit(@PathVariable("id") Long id, Model model) {
         Article article = repository.findById(id).orElse(null);
         model.addAttribute("article", article);
         return "/articles/edit";
@@ -78,5 +79,17 @@ public class ArticleController {
         Article updatedArticle = dto.toEntity();
         repository.save(updatedArticle);
         return "redirect:/articles/"+updatedArticle.getId();
+    }
+
+    @GetMapping("/articles/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Article article = repository.findById(id).orElse(null);
+        log.info("delete article {}", article);
+        if (article == null) {
+            return "redirect:/articles";
+        }
+        repository.deleteById(id);
+        redirectAttributes.addFlashAttribute("msg", "Deleted article " + article.getTitle());
+        return "redirect:/articles";
     }
 }
