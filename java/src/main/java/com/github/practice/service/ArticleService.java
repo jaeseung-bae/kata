@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.github.practice.domain.Article;
@@ -32,7 +31,7 @@ public class ArticleService {
     public Article patch(Long id, Article newArticle) {
         Article article = repository.findById(id).orElse(null);
         if (article == null) {
-            throw new IllegalArgumentException("Article not found");
+            throw new IllegalArgumentException("invalid id=" + id);
         }
         article.patch(newArticle);
         repository.save(article);
@@ -42,7 +41,7 @@ public class ArticleService {
     public void delete(Long id) {
         Article article = repository.findById(id).orElse(null);
         if (article == null) {
-            throw new IllegalArgumentException("Article not found");
+            throw new IllegalArgumentException("invalid id=" + id);
         }
         repository.delete(article);
     }
