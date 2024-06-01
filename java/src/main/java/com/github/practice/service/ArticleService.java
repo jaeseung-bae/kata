@@ -1,6 +1,8 @@
 package com.github.practice.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.github.practice.domain.Article;
 import com.github.practice.repository.ArticleRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -44,5 +47,12 @@ public class ArticleService {
             throw new IllegalArgumentException("invalid id=" + id);
         }
         repository.delete(article);
+    }
+
+    @Transactional
+    public List<Article> batchSave(List<Article> articles) {
+        return articles.stream()
+                       .map(repository::save)
+                       .collect(Collectors.toList());
     }
 }

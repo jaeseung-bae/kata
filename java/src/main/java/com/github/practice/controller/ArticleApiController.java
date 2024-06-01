@@ -1,5 +1,7 @@
 package com.github.practice.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -10,9 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.github.practice.domain.Article;
+import com.github.practice.dto.ArticleBatchCreateRequestDTO;
+import com.github.practice.dto.ArticleBatchCreateResponseDTO;
 import com.github.practice.dto.ArticleFormDTO;
 import com.github.practice.repository.ArticleRepository;
 import com.github.practice.service.ArticleService;
@@ -22,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-//@RestControllerAdvice
 @AllArgsConstructor
 public class ArticleApiController {
     private final ArticleRepository repository;
@@ -33,6 +35,15 @@ public class ArticleApiController {
         Article saved = service.save(dto.toEntity());
         log.info(saved.toString());
         return saved;
+    }
+
+    @PostMapping("/api/articles:batchCreate")
+    public ResponseEntity<ArticleBatchCreateResponseDTO> batchCreate(
+            @RequestBody ArticleBatchCreateRequestDTO dto) {
+        List<Article> articles = service.batchSave(dto.toEntityList());
+        log.info(articles.toString());
+        ArticleBatchCreateResponseDTO response = new ArticleBatchCreateResponseDTO(articles);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/articles/{id}")
