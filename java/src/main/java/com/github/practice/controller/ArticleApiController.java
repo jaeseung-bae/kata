@@ -1,5 +1,6 @@
 package com.github.practice.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -12,14 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.github.practice.domain.Article;
 import com.github.practice.dto.ArticleBatchCreateRequestDTO;
 import com.github.practice.dto.ArticleBatchCreateResponseDTO;
 import com.github.practice.dto.ArticleFormDTO;
-import com.github.practice.repository.ArticleRepository;
 import com.github.practice.service.ArticleService;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,14 +29,17 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @AllArgsConstructor
 public class ArticleApiController {
-    private final ArticleRepository repository;
     private final ArticleService service;
 
     @PostMapping("/api/articles")
-    public Article create(@RequestBody ArticleFormDTO dto) {
+    public ResponseEntity<Void> create(@RequestBody @Valid ArticleFormDTO dto) {
         Article saved = service.save(dto.toEntity());
-        log.info(saved.toString());
-        return saved;
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                                             .path("/{id}")
+                                             .buildAndExpand(saved.getId())
+                                             .toUri();
+        log.info("created uri={}", uri);
+        return ResponseEntity.created(uri).build();
     }
 
     @PostMapping("/api/articles:batchCreate")
