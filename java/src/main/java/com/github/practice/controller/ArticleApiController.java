@@ -2,6 +2,7 @@ package com.github.practice.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,8 +53,10 @@ public class ArticleApiController {
     }
 
     @GetMapping("/api/articles/{id}")
-    public Article getArticle(@PathVariable("id") Long id) {
-        return service.findById(id).orElse(null);
+    public ResponseEntity<Article> getArticle(@PathVariable("id") Long id) {
+        Optional<Article> article = service.findById(id);
+        return article.map(ResponseEntity::ok)
+                      .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/api/articles")
