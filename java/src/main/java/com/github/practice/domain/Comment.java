@@ -20,6 +20,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Comment {
+    public static Comment create(String nickname, String content, Article article) {
+        return new Comment(null, article, nickname, content);
+    }
+
     @Id
     @GeneratedValue
     @Column(name = "comment_id")
@@ -31,4 +35,12 @@ public class Comment {
     private String nickname;
     private String content;
 
+    public void patch(String nickname, String content) {
+        if (nickname != null) {
+            this.nickname = nickname;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
 }
