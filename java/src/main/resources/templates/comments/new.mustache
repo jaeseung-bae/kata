@@ -20,7 +20,7 @@
     const comment = {
       nickname: document.querySelector("#commenter-nickname").value,
       content: document.querySelector("#content").value,
-      articleId: document.querySelector("#article-id").value,
+      'article-id': document.querySelector("#article-id").value,
     };
     const url = "/api/comments";
     fetch(url, {
