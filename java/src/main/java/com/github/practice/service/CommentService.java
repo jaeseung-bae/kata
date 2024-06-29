@@ -1,6 +1,5 @@
 package com.github.practice.service;
 
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,9 @@ public class CommentService {
 
     @Transactional
     public Comment createComment(CommentDto commentDto) {
-        Article article = articleService.findById(commentDto.getArticleId()).orElseThrow();
+        Article article = articleService.findById(commentDto.getArticleId()).orElseThrow(
+                () -> new IllegalArgumentException("Article not found")
+        );
         Comment comment = Comment.create(commentDto.getNickname(), commentDto.getContent(), article);
         repository.save(comment);
         return comment;
