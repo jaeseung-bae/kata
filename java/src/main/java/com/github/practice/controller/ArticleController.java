@@ -1,6 +1,7 @@
 package com.github.practice.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.github.practice.domain.Article;
+import com.github.practice.domain.Comment;
 import com.github.practice.dto.ArticleFormDTO;
+import com.github.practice.dto.CommentDto;
 import com.github.practice.repository.ArticleRepository;
+import com.github.practice.service.CommentService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ArticleController {
     @Autowired
     ArticleRepository repository;
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/")
     public String index() {
@@ -53,6 +59,13 @@ public class ArticleController {
             return "articles/show";
         }
         model.addAttribute("article", article);
+
+        List<Comment> comments = commentService.findAllByArticleId(id);
+        List<CommentDto> commentDtos = comments.stream()
+                                               .map(v -> new CommentDto(v.getId(), v.getArticle().getId(),
+                                                                        v.getNickname(), v.getContent()))
+                                               .collect(Collectors.toList());
+        model.addAttribute("commentDtos", commentDtos);
         return "articles/show";
     }
 

@@ -48,4 +48,8 @@ public class CommentService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public long countByNickname(String nickname) {
+        return repository.countByNickname(nickname);
+    }
 }
