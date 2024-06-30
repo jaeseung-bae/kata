@@ -1,9 +1,11 @@
 package com.github.practice.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,6 +19,7 @@ class CommentRepositoryTest {
     private ArticleRepository articleRepository;
     @Autowired
     private CommentRepository commentRepository;
+    private Article article;
 
     @Test
     void findByArticleId() {
@@ -56,5 +59,27 @@ class CommentRepositoryTest {
         assertThat(comments)
                 .extracting(Comment::getNickname)
                 .allMatch(nickname -> nickname.equals(expectedNickname));
+    }
+
+    @BeforeEach()
+    void setUp() {
+        Article article = new Article(null, "title", "content");
+        this.article = articleRepository.save(article);
+    }
+
+    @Test
+    void test() {
+        // Arrange
+        String expectedNickname = "Brian";
+        Comment comment = new Comment(null, article, expectedNickname, "comment content");
+        commentRepository.save(comment);
+
+        // Act
+        assertTrue(commentRepository.existsById(comment.getId()));
+        assertTrue(commentRepository.existsByNickname(expectedNickname));
+        assertThat(commentRepository.readByNickname(expectedNickname).get().getNickname()).isEqualTo(expectedNickname);
+
+        // Assert
+
     }
 }

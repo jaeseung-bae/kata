@@ -73,4 +73,9 @@ public class CommentApiController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/api/comments:count")
+    public ResponseEntity<Long> countComments(@RequestParam("nickname") String nickname) {
+        return ResponseEntity.ok(service.countByNickname(nickname));
+    }
 }
