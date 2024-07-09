@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import com.github.practice.domain.Article;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ArticleBatchCreateRequestDTO {
+    @NotEmpty
+    @Size(min = 1)
     private List<ArticleFormDTO> articles;
+
     public List<Article> toEntityList() {
         return articles.stream()
                        .map(ArticleFormDTO::toEntity)
