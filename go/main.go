@@ -5,8 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	"git.linecorp.com/jaeseung-bae/test-gh/go/log"
+	"github.com/jaeseung-bae/kata/go/log"
 )
 
 func main() {
