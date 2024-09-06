@@ -3,7 +3,7 @@ module github.com/jaeseung-bae/kata/go
 go 1.22.4
 
 require (
-	github.com/gin-gonic/gin v1.9.1
+	github.com/gin-gonic/gin v1.10.0
 	github.com/sirupsen/logrus v1.9.1
 )
 
