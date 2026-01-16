@@ -1,11 +1,12 @@
 module github.com/jaeseung-bae/kata/go
 
-go 1.22.4
+go 1.23.0
+
 toolchain go1.23.7
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/sirupsen/logrus v1.9.1
+	github.com/sirupsen/logrus v1.9.4
 )
 
 require (
